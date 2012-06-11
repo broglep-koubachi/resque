@@ -138,6 +138,7 @@ module Resque
             Process.wait(@child)
           else
             procline "Processing #{job.queue} since #{Time.now.to_i}"
+            run_hook :after_fork, job
             perform(job, &block)
             exit! unless @cant_fork
           end
@@ -171,7 +172,6 @@ module Resque
     # Processes a given job in the child.
     def perform(job)
       begin
-        run_hook :after_fork, job
         job.perform
       rescue Object => e
         log "#{job.inspect} failed: #{e.inspect}"
