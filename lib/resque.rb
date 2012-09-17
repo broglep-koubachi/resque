@@ -13,6 +13,8 @@ require 'resque/job'
 require 'resque/worker'
 require 'resque/plugin'
 
+require 'resque/vendor/utf8_util'
+
 module Resque
   include Helpers
   extend self
@@ -114,17 +116,12 @@ module Resque
     "Resque Client connected to #{redis_id}"
   end
 
+  attr_accessor :inline
+
   # If 'inline' is true Resque will call #perform method inline
   # without queuing it into Redis and without any Resque callbacks.
   # The 'inline' is false Resque jobs will be put in queue regularly.
-  def inline?
-    @inline
-  end
-  alias_method :inline, :inline?
-
-  def inline=(inline)
-    @inline = inline
-  end
+  alias :inline? :inline
 
   #
   # queue manipulation
